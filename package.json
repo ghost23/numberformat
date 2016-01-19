@@ -1,6 +1,6 @@
 {
   "name": "numberformat",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Based on jquery-numberformatter, without dependency on jquery, formats numbers based on a formatting string and a locale.",
   "main": "index.js",
   "scripts": {
