@@ -13,7 +13,7 @@
   ],
   "author": "Sven Busse",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "lodash.assign": "^4.0.0"
   }
 }
