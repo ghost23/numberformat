@@ -87,78 +87,27 @@ function NumberFormatter() {
         return {dec: dec, group: group, neg: neg};
     }
 
+    function _roundNumber(number, decimalPlaces) {
+        var power = Math.pow(10, decimalPlaces || 0);
+        var value = String(Math.round(number * power) / power);
 
-    /*  Formatting Methods  */
-
-    /**
-     * First parses a string and reformats it with the given options.
-     *
-     * @param {Object} numberString
-     * @param {Object} options
-     */
-    this.formatNumber = function (numberString, options) {
-        options = _assign({}, this.defaults, options);
-        var formatData = formatCodes(options.locale.toLowerCase(), options.isFullLocale);
-
-        var dec = formatData.dec;
-        var group = formatData.group;
-        var neg = formatData.neg;
-
-        var validFormat = "0#-,.";
-
-        // in the prefix & suffix part of the format string, characters can be escaped
-        // by surrounding them in single quotes, so they are not intepreted as formatting placeholders
-        var singleQuote = '\'';
-        var nextCharIsQuoted = false;
-
-        // strip all the invalid characters at the beginning and the end
-        // of the format, and we'll stick them back on at the end
-        // make a special case for the negative sign "-" though, so
-        // we can have formats like -$23.32
-        var prefix = "";
-        var negativeInFront = false;
-        for (var i = 0; i < options.format.length; i++) {
-            if (options.format.charAt(i) == singleQuote) {
-                if (options.format.charAt(i + 1) == singleQuote) {
-                    prefix = prefix + singleQuote;
-                }
-                nextCharIsQuoted = !nextCharIsQuoted && options.format.charAt(i + 2) == singleQuote;
-            } else if (validFormat.indexOf(options.format.charAt(i)) == -1 || nextCharIsQuoted) {
-                prefix = prefix + options.format.charAt(i);
+        // ensure the decimal places are there
+        if (decimalPlaces > 0) {
+            var dp = value.indexOf(".");
+            if (dp == -1) {
+                value += '.';
+                dp = 0;
             } else {
-                if (i == 0 && options.format.charAt(i) == '-') {
-                    negativeInFront = true;
-                } else {
-                    // end of prefix has been reached, remove it from format string
-                    options.format = options.format.substring(i, options.format.length);
-                    break;
-                }
+                dp = value.length - (dp + 1);
+            }
+
+            while (dp < decimalPlaces) {
+                value += '0';
+                dp++;
             }
         }
-        var suffix = "";
-        for (i = options.format.length - 1; i >= 0; i--) {
-            if (options.format.charAt(i) == singleQuote) {
-                if (options.format.charAt(i - 1) == singleQuote) {
-                    suffix = singleQuote + suffix;
-                }
-                nextCharIsQuoted = !nextCharIsQuoted && options.format.charAt(i - 2) == singleQuote;
-            } else if (validFormat.indexOf(options.format.charAt(i)) == -1 || nextCharIsQuoted) {
-                suffix = options.format.charAt(i) + suffix;
-            } else {
-                // beginning of suffix has been reached, remove it from format string
-                options.format = options.format.substring(0, i + 1);
-                break;
-            }
-        }
-
-        // now we need to convert it into a number
-        //while (numberString.indexOf(group) > -1)
-        //  numberString = numberString.replace(group, '');
-        //var number = new Number(numberString.replace(dec, ".").replace(neg, "-"));
-        var number = Number(numberString);
-
-        return this._formatNumber(number, options, suffix, prefix, negativeInFront);
-    };
+        return value;
+    }
 
     /**
      * Formats a Number object into a string, using the given formatting options
@@ -166,7 +115,7 @@ function NumberFormatter() {
      * @param {Object} numberString
      * @param {Object} options
      */
-    this._formatNumber = function (number, options, suffix, prefix, negativeInFront) {
+    function _formatNumber(number, options, suffix, prefix, negativeInFront) {
         options = _assign({}, this.defaults, options);
         var formatData = formatCodes(options.locale.toLowerCase(), options.isFullLocale);
 
@@ -208,7 +157,7 @@ function NumberFormatter() {
 
             // round or truncate number as needed
             if (options.round == true)
-                number = Number(this._roundNumber(number, decimalFormat.length));
+                number = Number(_roundNumber(number, decimalFormat.length));
             else {
                 var numStr = number.toString();
                 if (numStr.lastIndexOf('.') > 0) {
@@ -218,7 +167,7 @@ function NumberFormatter() {
             }
 
             var decimalValue = Number(number.toString().substring(number.toString().indexOf('.')));
-            var decimalString = String(this._roundNumber(decimalValue, decimalFormat.length));
+            var decimalString = String(_roundNumber(decimalValue, decimalFormat.length));
             decimalString = decimalString.substring(decimalString.lastIndexOf('.') + 1);
             for (var i = 0; i < decimalFormat.length; i++) {
                 if (decimalFormat.charAt(i) == '#' && decimalString.charAt(i) != '0') {
@@ -301,28 +250,78 @@ function NumberFormatter() {
         }
         returnString = prefix + returnString + suffix;
         return returnString;
-    };
+    }
 
-    this._roundNumber = function (number, decimalPlaces) {
-        var power = Math.pow(10, decimalPlaces || 0);
-        var value = String(Math.round(number * power) / power);
+    /*  Formatting Methods  */
 
-        // ensure the decimal places are there
-        if (decimalPlaces > 0) {
-            var dp = value.indexOf(".");
-            if (dp == -1) {
-                value += '.';
-                dp = 0;
+    /**
+     * First parses a string and reformats it with the given options.
+     *
+     * @param {Object} numberString
+     * @param {Object} options
+     */
+    this.formatNumber = function (numberString, options) {
+        options = _assign({}, this.defaults, options);
+        var formatData = formatCodes(options.locale.toLowerCase(), options.isFullLocale);
+
+        var dec = formatData.dec;
+        var group = formatData.group;
+        var neg = formatData.neg;
+
+        var validFormat = "0#-,.";
+
+        // in the prefix & suffix part of the format string, characters can be escaped
+        // by surrounding them in single quotes, so they are not intepreted as formatting placeholders
+        var singleQuote = '\'';
+        var nextCharIsQuoted = false;
+
+        // strip all the invalid characters at the beginning and the end
+        // of the format, and we'll stick them back on at the end
+        // make a special case for the negative sign "-" though, so
+        // we can have formats like -$23.32
+        var prefix = "";
+        var negativeInFront = false;
+        for (var i = 0; i < options.format.length; i++) {
+            if (options.format.charAt(i) == singleQuote) {
+                if (options.format.charAt(i + 1) == singleQuote) {
+                    prefix = prefix + singleQuote;
+                }
+                nextCharIsQuoted = !nextCharIsQuoted && options.format.charAt(i + 2) == singleQuote;
+            } else if (validFormat.indexOf(options.format.charAt(i)) == -1 || nextCharIsQuoted) {
+                prefix = prefix + options.format.charAt(i);
             } else {
-                dp = value.length - (dp + 1);
-            }
-
-            while (dp < decimalPlaces) {
-                value += '0';
-                dp++;
+                if (i == 0 && options.format.charAt(i) == '-') {
+                    negativeInFront = true;
+                } else {
+                    // end of prefix has been reached, remove it from format string
+                    options.format = options.format.substring(i, options.format.length);
+                    break;
+                }
             }
         }
-        return value;
+        var suffix = "";
+        for (i = options.format.length - 1; i >= 0; i--) {
+            if (options.format.charAt(i) == singleQuote) {
+                if (options.format.charAt(i - 1) == singleQuote) {
+                    suffix = singleQuote + suffix;
+                }
+                nextCharIsQuoted = !nextCharIsQuoted && options.format.charAt(i - 2) == singleQuote;
+            } else if (validFormat.indexOf(options.format.charAt(i)) == -1 || nextCharIsQuoted) {
+                suffix = options.format.charAt(i) + suffix;
+            } else {
+                // beginning of suffix has been reached, remove it from format string
+                options.format = options.format.substring(0, i + 1);
+                break;
+            }
+        }
+
+        // now we need to convert it into a number
+        //while (numberString.indexOf(group) > -1)
+        //  numberString = numberString.replace(group, '');
+        //var number = new Number(numberString.replace(dec, ".").replace(neg, "-"));
+        var number = Number(numberString);
+
+        return _formatNumber(number, options, suffix, prefix, negativeInFront);
     };
 }
 
