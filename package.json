@@ -1,0 +1,19 @@
+{
+  "name": "numberformat",
+  "version": "1.0.0",
+  "description": "Based on jquery-numberformatter, without dependency on jquery, formats numbers based on a formatting string and a locale.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "numbers",
+    "formatting",
+    "i18n"
+  ],
+  "author": "Sven Busse",
+  "license": "ISC",
+  "devDependencies": {
+    "lodash.assign": "^4.0.0"
+  }
+}
