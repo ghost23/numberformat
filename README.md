@@ -1,6 +1,7 @@
-numberformat - Port from jquery.numberformatter, without parsing function and without dependency on jquery.
+# numberformat
+Port from jquery.numberformatter, without parsing function and without dependency on jquery or jshashtable.
 
-# Original jquery.numberformatter notes:
+## Original jquery.numberformatter notes:
 
 jquery.numberformatter - Formatting Numbers in jQuery
 
@@ -14,12 +15,12 @@ and GPL (GPL-LICENSE.txt) licenses.
 @author Michael Abernethy, Andrew Parry
 @version 1.2.4-RELEASE ($Id: $)
 
-## Dependencies
+### Dependencies
 
 jQuery (http://jquery.com)
 jshashtable (http://www.timdown.co.uk/jshashtable)
 
-## Notes & Thanks
+### Notes & Thanks
 
 many thanks to advweb.nanasi.jp for his bug fixes
 jsHashtable is now used also, so thanks to the author for that excellent little class.
@@ -33,13 +34,13 @@ has it's own. Before things were a little confusing, so I wanted to separate the
 more.
 
 
-### jQuery extension functions:
+#### jQuery extension functions:
 
 formatNumber(options, writeBack, giveReturnValue) - Reads the value from the subject, parses to
 a Javascript Number object, then formats back to text using the passed options and write back to
 the subject.
 
-### Generic functions:
+#### Generic functions:
 
 formatNumber(numberString, options) - Takes a plain number as a string (e.g. '1002.0123') and returns
 a string of the given format options.
@@ -69,7 +70,7 @@ For example, a format of "#,###.00" and text of 4500.20 will
 display as "4.500,20" with a locale of "de", and "4,500.20" with a locale of "us"
 
 
-## As of now, the only acceptable locales are
+### As of now, the only acceptable locales are
 
 * Arab Emirates -> "ae"
 * Australia -> "au"

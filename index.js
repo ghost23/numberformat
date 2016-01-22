@@ -1,20 +1,16 @@
 /**
  * jquery.numberformatter - Formatting/Parsing Numbers in jQuery
  *
- * Written by
+ * Originally written by
  * Michael Abernethy (mike@abernethysoft.com),
  * Andrew Parry (aparry0@gmail.com)
+ *
+ * Updated by Sven Busse
  *
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
- * @author Michael Abernethy, Andrew Parry
- * @version 1.2.4-RELEASE ($Id: $)
- *
- * Dependencies
- *
- * jshashtable (http://www.timdown.co.uk/jshashtable)
- *
+ * @author Sven Busse
  **/
 
 var _assign = require("lodash.assign");
